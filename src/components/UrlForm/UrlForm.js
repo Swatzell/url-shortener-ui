@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
 
-function UrlForm({ addUrl }) {
+function UrlForm({ addUrl, setError }) {
   const [title, setTitle] = useState('');
   const [urlToShorten, setUrlToShorten] = useState('');
 
   const handleSubmit = async e => {
     e.preventDefault();
+    if (!title || !urlToShorten) {
+      setError('Please fill in both fields.');
+      return;
+    }
     const newUrl = {
       title,
       long_url: urlToShorten
     };
     await addUrl(newUrl);
     clearInputs();
+    setError('');
   };
 
   const clearInputs = () => {
