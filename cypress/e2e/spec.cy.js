@@ -8,13 +8,19 @@ describe('URL Shortener', () => {
       statusCode: 201,
       body: {
         id: 2,
-        long_url: 'https://www.google.com',
+        long_url: 'https://www.example.com',
         short_url: 'http://localhost:3001/useshorturl/2',
-        title: 'Google'
+        title: 'Example'
       }
     }).as('saveUrl');
 
     cy.visit('http://localhost:3000');
   });
 
-  
+  it('should display the page title, form, and existing URLs', () => {
+    cy.get('header').contains('URL Shortener');
+    cy.get('form');
+    cy.get('.url').should('have.length', 1);
+  });
+
+ 
