@@ -17,10 +17,16 @@ describe('URL Shortener', () => {
     cy.visit('http://localhost:3000');
   });
 
-  it('should display the page title, form, and existing URLs', () => {
+  it('should display the title, form, and existing URLs', () => {
     cy.get('header').contains('URL Shortener');
     cy.get('form');
     cy.get('.url').should('have.length', 1);
   });
 
+  it('should take the input field values when the form is filled out', () => {
+    cy.get('input[name="title"]').type('Example').should('have.value', 'Example');
+    cy.get('input[name="urlToShorten"]').type('https://www.example.com').should('have.value', 'https://www.example.com');
+  });
+
  
+});
