@@ -27,6 +27,15 @@ describe('URL Shortener', () => {
     cy.get('input[name="title"]').type('Example').should('have.value', 'Example');
     cy.get('input[name="urlToShorten"]').type('https://www.example.com').should('have.value', 'https://www.example.com');
   });
-
+  
+  it('should create the new shortened URL when the form is submitted', () => {
+    cy.get('input[name="title"]').type('Example');
+    cy.get('input[name="urlToShorten"]').type('https://www.example.com');
+    cy.get('form').submit();
+    cy.wait('@saveUrl');
+    cy.get('.url').should('have.length', 2);
+    cy.get('.url').last().contains('Example');
+    cy.get('.url').last().contains('http://localhost:3001/useshorturl/2');
+  });
  
 });
