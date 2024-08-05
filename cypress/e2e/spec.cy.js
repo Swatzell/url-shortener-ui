@@ -18,9 +18,20 @@ describe('URL Shortener', () => {
   });
 
   it('should display the title, form, and existing URLs', () => {
+
     cy.get('header').contains('URL Shortener');
-    cy.get('form');
-    cy.get('.url').should('have.length', 1);
+
+    cy.get('form').within(() => {
+      cy.get('input[name="title"]').should('exist');
+      cy.get('input[name="urlToShorten"]').should('exist');
+      cy.get('button[type="submit"]').should('exist').and('contain', 'Shorten');
+    });
+    cy.get('.url').should('have.length', 1).within(() => {
+      cy.get('h3').contains('Awesome photo');
+      cy.get('a').should('have.attr', 'href', 'http://localhost:3001/useshorturl/1')
+        .and('contain', 'http://localhost:3001/useshorturl/1');
+      cy.get('p').contains('https://images.unsplash.com/photo-1531898418865-480b7090470f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=934&q=80');
+    });
   });
 
   it('should take the input field values when the form is filled out', () => {
@@ -34,8 +45,12 @@ describe('URL Shortener', () => {
     cy.get('form').submit();
     cy.wait('@saveUrl');
     cy.get('.url').should('have.length', 2);
-    cy.get('.url').last().contains('Example');
-    cy.get('.url').last().contains('http://localhost:3001/useshorturl/2');
+    cy.get('.url').last().within(() => {
+      cy.get('h3').contains('Example');
+      cy.get('a').should('have.attr', 'href', 'http://localhost:3001/useshorturl/2')
+        .and('contain', 'http://localhost:3001/useshorturl/2');
+      cy.get('p').contains('https://www.example.com');
+    });
   });
 
   it('should show an error message if the form is incomplete', () => {
@@ -43,7 +58,6 @@ describe('URL Shortener', () => {
     cy.get('form').submit();
     cy.get('.error').should('contain', 'Please fill in both fields.');
   });
-
 
   it('should show an error message if the server fails to fetch URLs', () => {
     cy.intercept('GET', 'http://localhost:3001/api/v1/urls', {
@@ -66,5 +80,3 @@ describe('URL Shortener', () => {
     cy.get('.url').should('have.length', 0);
   });
 });
-
- 
