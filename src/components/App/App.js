@@ -8,9 +8,18 @@ function App () {
   const [urls, setUrls] = useState([]);
 
   useEffect(() => {
+    fetchUrls();
+  }, []);
 
-  })
-
+  const fetchUrls = async () => {
+    try {
+      const data = await getUrls();
+      setUrls(data.urls);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
   return (
     <main className="App">
       <header>
