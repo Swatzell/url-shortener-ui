@@ -27,7 +27,7 @@ describe('URL Shortener', () => {
     cy.get('input[name="title"]').type('Example').should('have.value', 'Example');
     cy.get('input[name="urlToShorten"]').type('https://www.example.com').should('have.value', 'https://www.example.com');
   });
-  
+
   it('should create the new shortened URL when the form is submitted', () => {
     cy.get('input[name="title"]').type('Example');
     cy.get('input[name="urlToShorten"]').type('https://www.example.com');
@@ -37,5 +37,22 @@ describe('URL Shortener', () => {
     cy.get('.url').last().contains('Example');
     cy.get('.url').last().contains('http://localhost:3001/useshorturl/2');
   });
- 
+
+  it('should show an error message if the form is incomplete', () => {
+    cy.get('input[name="title"]').type('Example');
+    cy.get('form').submit();
+    cy.get('.error').should('contain', 'Please fill in both fields.');
+  });
+
+
+  it('should show an error message if the server fails to fetch URLs', () => {
+    cy.intercept('GET', 'http://localhost:3001/api/v1/urls', {
+      statusCode: 500,
+      body: { error: 'Internal Server Error' }
+    }).as('getUrlsError');
+
+    cy.visit('http://localhost:3000');
+    cy.get('.error').should('contain', 'Failed to fetch URLs.');
+  });
 });
+ 
