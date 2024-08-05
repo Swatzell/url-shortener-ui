@@ -54,5 +54,17 @@ describe('URL Shortener', () => {
     cy.visit('http://localhost:3000');
     cy.get('.error').should('contain', 'Failed to fetch URLs.');
   });
+
+  it('should delete a URL and remove it from the DOM', () => {
+    cy.intercept('DELETE', 'http://localhost:3001/api/v1/urls/1', {
+      statusCode: 204
+    }).as('deleteUrl');
+
+    cy.get('.url').should('have.length', 1);
+    cy.get('.url').first().contains('Delete').click();
+    cy.wait('@deleteUrl');
+    cy.get('.url').should('have.length', 0);
+  });
 });
+
  
