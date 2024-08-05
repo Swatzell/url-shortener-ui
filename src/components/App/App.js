@@ -19,17 +19,38 @@ function App () {
       console.log(error);
     }
   };
-  
+
+
+  const addUrl = async (newUrl) => {
+    try {
+      const savedUrl = await saveUrl(newUrl);
+      setUrls([...urls, savedUrl]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const removeUrl = async (id) => {
+    try {
+      await deleteUrl(id);
+      setUrls(urls.filter(url => url.id !== id));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
   return (
     <main className="App">
       <header>
         <h1>URL Shortener</h1>
-        <UrlForm />
+        <UrlForm addUrl={addUrl} />
       </header>
 
-      <UrlContainer urls={"<<<Urls should go here>>>"}/>
+      <UrlContainer urls={urls} removeUrl={removeUrl} />
     </main>
   );
 }
+
 
 export default App;
